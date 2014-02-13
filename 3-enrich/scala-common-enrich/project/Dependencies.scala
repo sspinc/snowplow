@@ -13,7 +13,7 @@
 import sbt._
 
 object Dependencies {
-  
+
   val resolutionRepos = Seq(
     // Required for our Scalaz snapshot
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/releases/",
@@ -32,6 +32,7 @@ object Dependencies {
     val http          = "4.1.1"
     val commonsLang   = "3.1"
     val commonsIo     = "2.4"
+    val commonsCodec  = "1.5"
     val yodaTime      = "2.1"
     val yodaConvert   = "1.2"
     val useragent     = "1.11"
@@ -56,6 +57,7 @@ object Dependencies {
     val httpClient    = "org.apache.httpcomponents"  %  "httpclient"          % V.http
     val commonsLang   = "org.apache.commons"         %  "commons-lang3"       % V.commonsLang
     val commonsIo     = "commons-io"                 %  "commons-io"          % V.commonsIo
+    val commonsCodec  = "commons-codec"              % "commons-codec"        % V.commonsCodec
     val yodaTime      = "joda-time"                  %  "joda-time"           % V.yodaTime
     val yodaConvert   = "org.joda"                   %  "joda-convert"        % V.yodaConvert
     val useragent     = "bitwalker"                  %  "UserAgentUtils"      % V.useragent
