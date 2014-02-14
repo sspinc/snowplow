@@ -21,11 +21,16 @@ import java.math.{BigDecimal => JBigDecimal}
 import java.lang.{Byte => JByte}
 
 // Apache Commons
+import org.apache.commons.codec.binary.Base64
 import org.apache.commons.lang3.exception.ExceptionUtils
 
 // Scalaz
 import scalaz._
 import Scalaz._
+
+// Argonaut
+import argonaut._
+import Argonaut._
 
 /**
  * General-purpose utils to help the
@@ -110,6 +115,47 @@ object ConversionUtils {
   }
 
   /**
+   * Converts a JSON string into a Validation[String, Json]
+   *
+   * @param json The JSON string to parse
+   * @return a Scalaz Validation, wrapping either an error
+   *         String or the extracted Json
+   */
+  def extractJson(json: String): Validation[String, Json] =
+    Parse.parse(json).validation
+
+  /**
+   * Decodes a URL-safe Base64 string.
+   *
+   * For details on the Base 64 Encoding with URL
+   * and Filename Safe Alphabet see:
+   *
+   * http://tools.ietf.org/html/rfc4648#page-7
+   *
+   * @param str The encoded string to be
+   *            decoded
+   * @param field The name of the field
+   * @return a Scalaz Validation, wrapping either an
+   *         an error String or the decoded String
+   */
+  // TODO: probably better to change the functionality and signature
+  // a little:
+  //
+  // 1. Signature -> : Validation[String, Option[String]]
+  // 2. Functionality:
+  //    1. If passed in null or "", return Success(None)
+  //    2. If passed in a non-empty string but result == "", then return a Failure, because we have failed to decode something meaningful
+  def decodeBase64Url(field: String, str: String): Validation[String, String] = {
+    try {
+      val decoder = new Base64(true) // true means "url safe"
+      val decodedBytes = decoder.decode(str)
+      new String(decodedBytes).success
+    } catch {
+      case e =>
+      "Field [%s]: exception Base64-decoding [%s] (URL-safe encoding): [%s]".format(field, str, e.getMessage).fail
+    }
+  }
+  /**
    * Decodes a String in the specific encoding,
    * also removing:
    * * Newlines - because they will break Hive
@@ -126,7 +172,7 @@ object ConversionUtils {
    * no need to remove line breaks, tabs etc
    *
    * @param enc The encoding of the String
-   * @param field The name of the field 
+   * @param field The name of the field
    * @param str The String to decode
    *
    * @return a Scalaz Validation, wrapping either
@@ -143,7 +189,7 @@ object ConversionUtils {
       r.success
     } catch {
       case e =>
-        "Exception decoding [%s] from [%s] encoding: [%s]".format(str, enc, e.getMessage).fail
+        "Field [%s]: Exception URL-decoding [%s] (encoding: [%s])".format(field, str, enc, e.getMessage).fail
     }
 
   /**
@@ -162,7 +208,7 @@ object ConversionUtils {
    * @return an Option-boxed URI object, or an
    *         error message, all
    *         wrapped in a Validation
-   */       
+   */
   def stringToUri(uri: String): Validation[String, Option[URI]] =
     try {
       val r = uri.replaceAll(" ", "%20") // Because so many raw URIs are bad, #346
@@ -263,7 +309,7 @@ object ConversionUtils {
    *         value, all boxed in a Scalaz
    *         Validation
    */
-  def stringToBoolean(str: String): Validation[String, Boolean] = 
+  def stringToBoolean(str: String): Validation[String, Boolean] =
     if (str == "1") {
       true.success
     } else if (str == "0") {
@@ -307,7 +353,7 @@ object ConversionUtils {
    * @return the Boolean value of b, or
    *         an error message if b is
    *         not 0 or 1 - all boxed in a
-   *         Scalaz Validation 
+   *         Scalaz Validation
    */
   def byteToBoolean(b: Byte): Validation[String, Boolean] =
     if (b == 0)
