@@ -80,6 +80,9 @@ CREATE TABLE "atomic"."events" (
 	"se_label" varchar(255),
 	"se_property" varchar(255),
 	"se_value" double precision,
+	-- Custom unstructured event
+	"ue_name" varchar(255),
+	"ue_properties" json,
 	-- Ecommerce
 	"tr_orderid" varchar(255),
 	"tr_affiliation" varchar(255),

@@ -82,6 +82,9 @@ CREATE TABLE atomic.events (
 	se_label varchar(255) encode text32k,
 	se_property varchar(255) encode text32k,
 	se_value double precision,                 -- Increased size in 0.2.1
+	-- Custom unstructured event
+	ue_name varchar(255) encode text255,
+	ue_properties varchar(4000) encode lzo,
 	-- Ecommerce
 	tr_orderid varchar(255) encode raw,
 	tr_affiliation varchar(255) encode text255,
