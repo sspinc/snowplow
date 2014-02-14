@@ -63,7 +63,7 @@ object PagePingCfLineTest {
     null,
     null,
     null,
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     "Tarot cards - Psychic Bazaar",
     // Raw referer URL is discarded
     "http",
@@ -86,12 +86,14 @@ object PagePingCfLineTest {
     "buy tarot",
     null,
     "spring_sale",
-    null, // Event fields empty
+    null, // Structured event fields empty
     null, //
     null, //
     null, //
     null, //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //

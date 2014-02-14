@@ -35,7 +35,7 @@ object JobTestHelpers {
   /**
    * The current version of our Hadoop ETL
    */
-  val EtlVersion = "hadoop-0.3.6-common-0.1.0"
+  val EtlVersion = "hadoop-0.3.6-common-0.1.0-unstruct"
 
   /**
    * Fields in our CanonicalOutput which are unmatchable
@@ -141,10 +141,10 @@ object JobTestHelpers {
    * @param lines The Lines object
    * @return the ScaldingLines ready for Scalding
    */
-  implicit def Lines2ScaldingLines(lines : Lines): ScaldingLines = lines.numberedLines 
+  implicit def Lines2ScaldingLines(lines : Lines): ScaldingLines = lines.numberedLines
 
   // Standard JobTest definition used by all integration tests
-  val EtlJobTest: (String, String) => JobTest = (collector, anonQuartets) => 
+  val EtlJobTest: (String, String) => JobTest = (collector, anonQuartets) =>
     JobTest("com.snowplowanalytics.snowplow.enrich.hadoop.EtlJob").
       arg("input_folder", "inputFolder").
       arg("input_format", collector).

@@ -64,7 +64,7 @@ object Sep2013CfLineTest {
     null,
     null,
     null,
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     "Dreaming Way Tarot - Psychic Bazaar",
     // Raw referer URL is discarded
     "http",
@@ -88,12 +88,14 @@ object Sep2013CfLineTest {
     "rome choi tarot",
     "42017424088",
     "uk-tarot-decks--pbz00316",
-    null, // Event fields empty
+    null, // Structured event fields empty
     null, //
     null, //
     null, //
     null, //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //

@@ -63,7 +63,7 @@ object StructEventCfLineTest {
     null,
     "52.199997",
     "0.11669922",
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     null, // No page title for events
     // Raw referer URL is discarded
     "http",
@@ -91,7 +91,9 @@ object StructEventCfLineTest {
     "PBZ00110",      //
     "1",             //
     "35708.23",     //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //

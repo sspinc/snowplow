@@ -63,7 +63,7 @@ object CljTomcatLineTest {
     null,
     null,
     null,
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     "Snowplow in a Universal Analytics world - what the new version of Google Analytics means for companies adopting Snowplow - Snowplow Analytics",
     // Raw referer URL is discarded
     "http",
@@ -86,12 +86,14 @@ object CljTomcatLineTest {
     null, //
     null, //
     null, //
-    null, // Event fields empty
+    null, // Structured event fields empty
     null, //
     null, //
     null, //
     null, //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //

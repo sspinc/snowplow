@@ -13,7 +13,7 @@
 import sbt._
 
 object Dependencies {
-  
+
   val resolutionRepos = Seq(
     // Required for our Scalaz snapshot
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/releases/",
@@ -29,7 +29,7 @@ object Dependencies {
     // Scala
     val scalding      = "0.8.11"
     val scalaz7       = "7.0.0"
-    val commonEnrich  = "0.1.0"
+    val commonEnrich  = "0.1.0-unstruct"
     // Scala (test only)
     val specs2        = "1.14"
     val scalazSpecs2  = "0.1.2"

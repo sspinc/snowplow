@@ -64,7 +64,7 @@ object Aug2013CfLineTest {
     null,
     null,
     null,
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     "Introduction - Snowplow Analytics%",
     // Raw referer URL is discarded
     "http",
@@ -87,12 +87,14 @@ object Aug2013CfLineTest {
     null, //
     null, //
     null, //
-    null, // Event fields empty
+    null, // Structured event fields empty
     null, //
     null, //
     null, //
     null, //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //

@@ -63,7 +63,7 @@ object TransactionCfLineTest {
     null,
     "52.199997",
     "0.11669922",
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     null, // No page title for transactions
     // Raw referer URL is discarded
     "http",
@@ -86,12 +86,14 @@ object TransactionCfLineTest {
     null, //
     null, //
     null, //
+    null, // Structured event fields empty
+    null, //
+    null, //
+    null, //
+    null, //
     null, // Unstructured event fields empty
     null, //
-    null, //
-    null, //
-    null, //
-    "order-123",     // Transaction fields are set 
+    "order-123",     // Transaction fields are set
     "psychicbazaar", //
     "8000",          //
     "200",           //

@@ -126,6 +126,8 @@ object EnrichmentManager {
 
     // 2b. Failable enrichments using the payload
 
+    val extractUrlEncJson: TransformFunc = EE.extractUrlEncJson(raw.encoding, _, _)
+
     // We use a TransformMap which takes the format:
     // "source key" -> (transformFunction, field(s) to set)
     // Caution: by definition, a TransformMap loses type safety. Always unit test!
@@ -174,6 +176,10 @@ object EnrichmentManager {
           ("se_la"   , (ME.toTsvSafe, "se_label")),
           ("se_pr"   , (ME.toTsvSafe, "se_property")),
           ("se_va"   , (CU.stringToDoublelike, "se_value")),
+          // Custom unstructured events
+          ("ue_na"   , (ME.toTsvSafe, "ue_name")),
+          ("ue_pr"   , (extractUrlEncJson, "ue_properties")),
+          ("ue_px"   , (EE.extractBase64EncJson, "ue_properties")),
           // Ecommerce transactions
           ("tr_id"   , (ME.toTsvSafe, "tr_orderid")),
           ("tr_af"   , (ME.toTsvSafe, "tr_affiliation")),
@@ -197,7 +203,7 @@ object EnrichmentManager {
           ("pp_may"  , (CU.stringToJInteger, "pp_yoffset_max")))
 
     val sourceMap: SourceMap = parameters.map(p => (p.getName -> p.getValue)).toList.toMap
-  
+
     val transform = event.transform(sourceMap, transformMap)
 
     // Potentially update the page_url and set the page URL components
@@ -230,7 +236,7 @@ object EnrichmentManager {
     // Potentially set the referrer details and URL components
     val refererUri = CU.stringToUri(event.page_referrer)
     for (uri <- refererUri; u <- uri) {
-      
+
       // Set the URL components
       val components = CU.explodeUri(u)
       event.refr_urlscheme = components.scheme
@@ -277,7 +283,7 @@ object EnrichmentManager {
     event.refr_term = CU.truncate(event.refr_term, 255)
     event.se_label = CU.truncate(event.se_label, 255)
 
-    // Collect our errors on Failure, or return our event on Success 
+    // Collect our errors on Failure, or return our event on Success
     (useragent.toValidationNel |@| client.toValidationNel |@| pageUri.toValidationNel |@| geoLocation.toValidationNel |@| refererUri.toValidationNel |@| transform |@| campaign) {
       (_,_,_,_,_,_,_) => event
     }

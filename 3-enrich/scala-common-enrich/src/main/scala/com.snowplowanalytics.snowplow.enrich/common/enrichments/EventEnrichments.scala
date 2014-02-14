@@ -24,6 +24,9 @@ import Scalaz._
 import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.DateTimeFormat
 
+// Common Enrich
+import utils.{ConversionUtils => CU}
+
 /**
  * Holds the enrichments related to events.
  */
@@ -93,6 +96,7 @@ object EventEnrichments {
     code match {
       case "se" => "struct".success
       case "ev" => "struct".success // LEGACY. Remove late 2013
+      case "ue" => "unstruct".success
       case "ad" => "ad_impression".success
       case "tr" => "transaction".success
       case "ti" => "transaction_item".success
@@ -102,7 +106,30 @@ object EventEnrichments {
     }
 
   /**
-   * Returns a unique event ID. The event ID is 
+   * Noodling in support of below.
+   */
+  private def validateJson(field: String, str: String): Validation[String, String] = {
+    CU.extractJson(str).bimap(
+      e => "Field [%s]: invalid JSON with parsing error: %s".format(field, e),
+      f => str)
+  }
+
+  /**
+   * Decodes URL-encoded String then validates
+   * it as correct JSON.
+   */
+  val extractUrlEncJson: (String, String, String) => Validation[String, String] = (enc, field, str) =>
+    CU.decodeString(enc, field, str).flatMap(json => validateJson(field, json))
+
+  /**
+   * Decodes Base64 (URL safe)-encoded String then
+   * validates it as correct JSON.
+   */
+  val extractBase64EncJson: (String, String) => Validation[String, String] = (field, str) =>
+    CU.decodeBase64Url(field, str).flatMap(json => validateJson(field, json))
+
+  /**
+   * Returns a unique event ID. The event ID is
    * generated as a type 4 UUID, then converted
    * to a String.
    *

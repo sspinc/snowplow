@@ -63,7 +63,7 @@ object PageViewCfLineTest {
     null,
     "52.199997",
     "0.11669922",
-    // Raw page URL is discarded 
+    // Raw page URL is discarded
     "Psychic Bazaar    Shop",
     // Raw referer URL is discarded
     "http",
@@ -91,7 +91,9 @@ object PageViewCfLineTest {
     null, //
     null, //
     null, //
-    null, // Transaction fields empty 
+    null, // Unstructured event fields empty
+    null, //
+    null, // Transaction fields empty
     null, //
     null, //
     null, //
