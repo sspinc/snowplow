@@ -205,7 +205,7 @@ object ConversionUtils {
       Some(URI.create(r)).success
     } catch {
       case npe: NullPointerException => None.success
-      case iae: IllegalArgumentException => "Provided URI string [%s] violates RFC 2396: [%s]".format(uri, ExceptionUtils.getRootCause(iae).getMessage).fail
+      case iae: IllegalArgumentException => None.success
       case e => "Unexpected error creating URI from string [%s]: [%s]".format(uri, e.getMessage).fail
     }
 
