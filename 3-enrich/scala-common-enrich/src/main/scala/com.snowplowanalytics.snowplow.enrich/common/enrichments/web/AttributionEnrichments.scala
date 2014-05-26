@@ -71,7 +71,7 @@ object AttributionEnrichments {
       case _ => false
     }
     def canEqual(other: Any): Boolean = other.isInstanceOf[MarketingCampaign]
-    
+
     // No reflection for perf reasons.
     override def hashCode: Int = new HashCodeBuilder()
       .append(source)
@@ -106,6 +106,7 @@ object AttributionEnrichments {
     val parameters = try {
       URLEncodedUtils.parse(uri, encoding)
     } catch {
+      // FIXME: Revert to line below org.apache.httpcomponents.httpclient bumped to ~4.2.5
       // case _ => return "Could not parse uri [%s]".format(uri).failNel[MarketingCampaign]
       case _ => new ArrayList[NameValuePair](1)
     }
@@ -135,7 +136,7 @@ object AttributionEnrichments {
   /**
    * Extract details about the referer (sic).
    *
-   * Uses the referer-parser library. 
+   * Uses the referer-parser library.
    *
    * @param uri The referer URI to extract
    *            referer details from
