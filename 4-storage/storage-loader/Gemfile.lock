@@ -15,6 +15,9 @@ GEM
       nokogiri (~> 1.5)
       ruby-hmac
     formatador (0.2.4)
+    jdbc-postgres (9.4.1206)
+    jruby-jars (9.1.2.0)
+    jruby-rack (1.1.20)
     mime-types (1.25)
     mini_portile (0.5.1)
     multi_json (1.8.1)
@@ -23,15 +26,31 @@ GEM
     net-ssh (2.7.0)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
-    pg (0.14.1)
+    nokogiri (1.6.0-java)
+      mini_portile (~> 0.5.0)
+    rake (11.2.2)
     ruby-hmac (0.4.0)
+    rubyzip (1.2.0)
     sluice (0.1.5)
       contracts (~> 0.2.3)
       fog (~> 1.14.0)
+    warbler (2.0.3)
+      jruby-jars (>= 9.0.0.0)
+      jruby-rack (>= 1.1.1, < 1.3)
+      rake (>= 10.1.0)
+      rubyzip (~> 1.0, < 1.4)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
-  pg (~> 0.14.1)
+  jdbc-postgres
   sluice (~> 0.1.5)
+  warbler
+
+RUBY VERSION
+   ruby 1.9.3p551 (jruby 1.7.24)
+
+BUNDLED WITH
+   1.12.5
