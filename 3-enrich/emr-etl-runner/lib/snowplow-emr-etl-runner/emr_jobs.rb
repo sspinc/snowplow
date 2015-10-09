@@ -39,12 +39,12 @@ module SnowPlow
 
         # Configure
         @jobflow.name = config[:etl][:job_name]
-        @jobflow.hadoop_version = config[:emr][:hadoop_version]
+        @jobflow.ami_version = config[:emr][:ami_version]
+        @jobflow.region = config[:emr][:region]
         @jobflow.ec2_key_name = config[:emr][:ec2_key_name]
         @jobflow.job_flow_role = config[:emr][:jobflow_role]
         @jobflow.service_role = config[:emr][:service_role]
         @jobflow.placement = config[:emr][:placement]
-        @jobflow.ec2_subnet_id = config[:emr][:ec2_subnet_id]
         @jobflow.log_uri = config[:s3][:buckets][:log]
         @jobflow.enable_debugging = config[:debug]
         @jobflow.visible_to_all_users = true
