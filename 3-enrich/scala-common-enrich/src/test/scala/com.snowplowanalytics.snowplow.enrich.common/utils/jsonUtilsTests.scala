@@ -57,7 +57,14 @@ class ValidateAndReformatJsonTest extends Specification with DataTables with Val
     "Reformatted JSON #3" !! """
       {
         "a": 23
-      }"""                                                        ! """{"a":23}"""        |> {
+      }"""                                                        ! """{"a":23}"""        |
+    "JSON with schema"    !! """
+      {
+        "schema": "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0",
+        "data": {
+          "a": 42
+        }
+      }"""                                                        ! """{"a":42}"""        |> {
       (_, str, expected) =>
         JsonUtils.validateAndReformatJson(MaxLength, FieldName, str) must beSuccessful(expected)
     }
