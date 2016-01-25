@@ -67,21 +67,16 @@ object JsonUtils {
     extractJson(str)
       .bimap(
         e => "Field [%s]: invalid JSON with parsing error: %s".format(field, e),
-        f => formatJson(f))
+        f => unwrapJson(f).nospaces)
       .flatMap(j => if (j.length > maxLength) {
         "Field [%s]: reformatted JSON length [%s] exceeds maximum allowed length [%s]".format(field, j.length, maxLength).fail
         } else j.success)
 
-  def formatJson(json: Json): String = {
-
-    def unwrapData: Json = {
-      json.fieldOrEmptyObject("data")
-    }
-
+  def unwrapJson(json: Json): Json = {
     if (json.hasField("schema") && json.hasField("data")) {
-      unwrapData.nospaces
+      json.fieldOrEmptyObject("data")
     } else {
-      json.nospaces
+      json
     }
   }
 
