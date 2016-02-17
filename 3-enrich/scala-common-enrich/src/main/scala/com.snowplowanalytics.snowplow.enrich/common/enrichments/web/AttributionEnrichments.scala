@@ -16,6 +16,7 @@ package web
 
 // Java
 import java.net.URI
+import java.util.ArrayList
 
 // Scala
 import scala.collection.JavaConversions._
@@ -105,7 +106,7 @@ object AttributionEnrichments {
     val parameters = try {
       URLEncodedUtils.parse(uri, encoding)
     } catch {
-      case _ => return "Could not parse uri [%s]".format(uri).failNel[MarketingCampaign]
+      case _ : Exception => new ArrayList[NameValuePair](1)
     }
 
     val decodeString: TransformFunc = CU.decodeString(encoding, _, _)
