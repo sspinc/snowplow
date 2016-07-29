@@ -15,6 +15,7 @@
 
 require 'set'
 require 'elasticity'
+require 'json'
 
 # Ruby class to execute SnowPlow's Hive jobs against Amazon EMR
 # using Elasticity (https://github.com/rslifka/elasticity).
@@ -34,8 +35,14 @@ module SnowPlow
 
         puts "Initializing EMR jobflow"
 
+        # Configure Elasticity with your AWS credentials
+        Elasticity.configure do |c|
+          c.access_key = config[:aws][:access_key_id]
+          c.secret_key = config[:aws][:secret_access_key]
+        end
+
         # Create a job flow with your AWS credentials
-        @jobflow = Elasticity::JobFlow.new(config[:aws][:access_key_id], config[:aws][:secret_access_key])
+        @jobflow = Elasticity::JobFlow.new
 
         # Configure
         @jobflow.name = config[:etl][:job_name]
@@ -78,7 +85,7 @@ module SnowPlow
         # We only consolidate files on HDFS folder for CloudFront currently
         unless config[:etl][:collector_format] == "cloudfront"
           hadoop_input = config[:s3][:buckets][:processing]
-        
+
         else
           hadoop_input = "hdfs:///local/snowplow-logs"
 
@@ -164,7 +171,7 @@ module SnowPlow
         while true do
           begin
             # Count up running tasks and failures
-            statuses = @jobflow.status.steps.map(&:state).inject([0, 0]) do |sum, state|
+            statuses = @jobflow.cluster_step_status.map(&:state).inject([0, 0]) do |sum, state|
               [ sum[0] + (@@running_states.include?(state) ? 1 : 0), sum[1] + (@@failed_states.include?(state) ? 1 : 0) ]
             end
 
