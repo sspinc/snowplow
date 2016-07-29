@@ -16,5 +16,5 @@
 # Warbler jar application assembly configuration file
 Warbler::Config.new do |config|
   config.autodeploy_dir = "deploy"
-  config.jar_name = "snowplow-emr-etl-runner"
+  config.jar_name = "snowplow-emr-etl-runner-classic"
 end

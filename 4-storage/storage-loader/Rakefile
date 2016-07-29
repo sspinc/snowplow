@@ -19,7 +19,7 @@
 
 require 'rake/clean'
 
-APP_NAME = 'snowplow-storage-loader'
+APP_NAME = 'snowplow-storage-loader-classic'
 JAR_PATH = "deploy/#{APP_NAME}.jar"
 EXECUTABLE_PATH = "deploy/#{APP_NAME}"
 

@@ -19,7 +19,7 @@
 
 require 'rake/clean'
 
-APP_NAME = 'snowplow-emr-etl-runner'
+APP_NAME = 'snowplow-emr-etl-runner-classic'
 JAR_PATH = "deploy/#{APP_NAME}.jar"
 EXECUTABLE_PATH = "deploy/#{APP_NAME}"
 
