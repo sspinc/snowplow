@@ -3,11 +3,10 @@ GEM
   specs:
     builder (3.2.2)
     contracts (0.2.4)
-    domain_name (0.5.25)
+    domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
-    elasticity (4.0.5)
+    elasticity (6.0.8)
       fog (~> 1.0)
-      nokogiri (~> 1.0)
       rest-client (~> 1.0)
       unf (~> 0.1)
     excon (0.25.3)
@@ -30,7 +29,7 @@ GEM
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.7.0)
-    netrc (0.10.3)
+    netrc (0.11.0)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     rest-client (1.8.0)
@@ -43,14 +42,17 @@ GEM
       fog (~> 1.14.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  elasticity (~> 4.0.5)
+  elasticity (~> 6.0.8)
   sluice (~> 0.1.5)
 
+RUBY VERSION
+   ruby 1.9.3p551
+
 BUNDLED WITH
-   1.10.6
+   1.12.5
