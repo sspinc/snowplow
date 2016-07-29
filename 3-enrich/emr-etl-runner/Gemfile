@@ -23,5 +23,5 @@ gem "elasticity", "~> 4.0.5"
 gem "sluice", "~> 0.1.5"
 
 group :development do
-  gem "warbler" if RUBY_PLATFORM == 'java'
+  gem "warbler", "~> 1.4.9" if RUBY_PLATFORM == 'java'
 end
