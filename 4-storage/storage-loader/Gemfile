@@ -19,7 +19,9 @@ ruby "1.9.3"
 # StorageLoader is a Ruby app (not a RubyGem)
 # built with Bundler, so we add in the
 # RubyGems it requires here.
-gem "sluice", "~> 0.1.5"
+gem "contracts", "= 0.7"
 gem "jdbc-postgres"
+gem "net-ssh", "~> 2.9.2"
+gem "sluice", "~> 0.2.2"
 
 gem "warbler", "~> 1.4.9" if RUBY_PLATFORM == 'java'
