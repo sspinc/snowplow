@@ -25,7 +25,8 @@ EXECUTABLE_PATH = "deploy/#{APP_NAME}"
 
 desc "Build executable jar"
 task :build_executable do
-  `warble jar`
+  `rm -f #{EXECUTABLE_PATH}`
+  `bundle exec warble`
   `cat bin/jarx-stub.sh #{JAR_PATH} > #{EXECUTABLE_PATH}`
   `chmod +x #{EXECUTABLE_PATH}`
   CLEAN.include(JAR_PATH)
