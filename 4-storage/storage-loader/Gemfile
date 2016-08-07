@@ -22,4 +22,7 @@ ruby "1.9.3"
 gem "jdbc-postgres"
 gem "sluice", "~> 0.4.0"
 
+gem "fog-core", "= 1.31.1"
+gem "mime-types", "= 2.6.1"
+
 gem "warbler", "~> 1.4.9" if RUBY_PLATFORM == 'java'
