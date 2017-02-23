@@ -65,7 +65,7 @@ object EnrichJobSpec {
     def deleteAll(): Unit = List(badRows, output).foreach(deleteRecursively)
   }
 
-  val etlVersion = "spark-1.9.0-common-0.25.0"
+  val etlVersion = "spark-1.9.0-common-0.25.0-sspinc"
 
   val etlTimestamp = "2001-09-09 01:46:40.000"
 
@@ -228,6 +228,16 @@ object EnrichJobSpec {
             |"connection": {
               |"http": {
                 |"uri": "http://iglucentral.com"
+              |}
+            |}
+          |},
+          |{
+            |"name": "Secret Sauce Static Iglu Server",
+            |"priority": 1,
+            |"vendorPrefixes": [ "io.sspinc" ],
+            |"connection": {
+              |"http": {
+                |"uri": "http://iglu.sspinc.io"
               |}
             |}
           |}
