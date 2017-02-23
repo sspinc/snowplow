@@ -19,7 +19,7 @@ package shredder
 
 // Jackson
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.databind.node.{JsonNodeFactory, ObjectNode}
 
 // Scala
 import scala.collection.JavaConversions._
@@ -61,7 +61,7 @@ object Shredder {
   // Self-describing schema for a ue_properties
   private val UePropertiesSchema = SchemaCriterion("com.snowplowanalytics.snowplow", "unstruct_event", "jsonschema", 1, 0)
 
-  // Self-describing schema for a contexts
+  // Self-describing schema for contexts
   private val ContextsSchema = SchemaCriterion("com.snowplowanalytics.snowplow", "contexts", "jsonschema", 1, 0)
 
   /**
@@ -326,6 +326,23 @@ object Shredder {
    * @param instance The JSON instance itself
    * @return the pimped ScalazArgs
    */
-  private def extractJson(field: String, instance: String): ValidatedNelMessage[JsonNode] =
-    JsonUtils.extractJson(field, instance).toProcessingMessageNel
+  private def extractJson(field: String, instance: String): ValidatedNelMessage[JsonNode] = {
+    var json = JsonUtils.extractJson(field, instance)
+    if (json.isSuccess) {
+      val node = json.getOrElse(JsonNodeFactory.instance.objectNode())
+
+      // Ensure node is self-describing
+      if (!node.has("schema")) {
+        val envelope = JsonNodeFactory.instance.objectNode()
+        val unstructEvent = JsonNodeFactory.instance.objectNode()
+
+        envelope.put("schema", "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0")
+        envelope.put("data", node)
+        unstructEvent.put("schema", "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0")
+        unstructEvent.put("data", envelope)
+        json = Validation.success[String, JsonNode](unstructEvent.asInstanceOf[JsonNode])
+      }
+    }
+    json.toProcessingMessageNel
+  }
 }
