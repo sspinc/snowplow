@@ -119,7 +119,8 @@ object Shredder {
     extracted.map { (jsonNodes: List[JsonNode]) =>
       jsonNodes.map(jsonNode => {
         // Overwrite original JSON when wrapping classic events
-        if (jsonNode.has("schema") && jsonNode.get("schema") == "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0") {
+        if (jsonNode.has("schema") &&
+          jsonNode.get("schema").textValue() == "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0") {
           val unstructEvent = JsonNodeFactory.instance.objectNode()
           unstructEvent.put("schema", "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0")
           unstructEvent.put("data", jsonNode)
