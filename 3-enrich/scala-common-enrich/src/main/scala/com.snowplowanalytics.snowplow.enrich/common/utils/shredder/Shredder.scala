@@ -119,7 +119,7 @@ object Shredder {
     extracted.map { (jsonNodes: List[JsonNode]) =>
       jsonNodes.map(jsonNode => {
         // Overwrite original JSON when wrapping classic events
-        if (jsonNode.get("schema") == "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0") {
+        if (jsonNode.has("data") && jsonNode.get("data").has("schema") && jsonNode.get("data").get("schema") == "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0") {
           event.unstruct_event = jsonNode.toString
         }
       })
