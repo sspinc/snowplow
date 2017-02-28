@@ -151,6 +151,10 @@ class EnrichJob(@transient val spark: SparkSession, args: Array[String]) extends
     identity
   )
 
+  def parallelIsEmpty[T](rdd : RDD[T]) = {
+    rdd.mapPartitions(it => Iterator(!it.hasNext)).reduce(_&&_)
+  }
+
   /**
    * Run the enrich job by:
    *   - reading input events in different collector formats
@@ -179,14 +183,14 @@ class EnrichJob(@transient val spark: SparkSession, args: Array[String]) extends
         }
         errors.map(BadRow(originalLine, _).toCompactJson)
       }
-    if (!bad.isEmpty) {
+    if (!parallelIsEmpty(bad)) {
       bad.saveAsTextFile(enrichConfig.badFolder)
     }
 
     // Handling of properly-formed rows
     val good = common
       .flatMap { case (_, enriched) => projectGoods(enriched) }
-    if (!good.isEmpty) {
+    if (!parallelIsEmpty(good)) {
       spark.createDataset(good)(Encoders.bean(classOf[EnrichedEvent]))
         .toDF()
         // hack to preserve the order of the fields in the csv, otherwise it's alphabetical
