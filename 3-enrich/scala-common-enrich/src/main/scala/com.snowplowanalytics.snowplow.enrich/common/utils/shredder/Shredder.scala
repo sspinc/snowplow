@@ -343,16 +343,28 @@ object Shredder {
     if (json.isSuccess) {
       val node = json.getOrElse(JsonNodeFactory.instance.objectNode())
 
-      // Ensure node is self-describing
-      if (!node.has("schema")) {
-        val envelope = JsonNodeFactory.instance.objectNode()
-        val unstructEvent = JsonNodeFactory.instance.objectNode()
+      // Ensure unstructured events are self-describing
+      if (field == "ue_properties") {
+        if (!node.has("schema")) {
+          // Event has no schema whatsoever
+          val classicEvent = JsonNodeFactory.instance.objectNode()
+          val unstructEvent = JsonNodeFactory.instance.objectNode()
 
-        envelope.put("schema", "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0")
-        envelope.put("data", node)
-        unstructEvent.put("schema", "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0")
-        unstructEvent.put("data", envelope)
-        json = Validation.success[String, JsonNode](unstructEvent.asInstanceOf[JsonNode])
+          classicEvent.put("schema", "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0")
+          classicEvent.put("data", node)
+          unstructEvent.put("schema", "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0")
+          unstructEvent.put("data", classicEvent)
+          json = Validation.success[String, JsonNode](unstructEvent.asInstanceOf[JsonNode])
+        } else if (node.get("schema").textValue() == "iglu:com.snowplowanalytics.snowplow/unstruct_event/jsonschema/1-0-0") {
+            val data = node.get("data")
+          if (!data.has("schema")) {
+            // Event is an unstructured event but has no event schema
+            val classicEvent = JsonNodeFactory.instance.objectNode()
+            classicEvent.put("schema", "iglu:io.sspinc.events.analytics/classic_event/jsonschema/1-0-0")
+            classicEvent.put("data", data)
+            node.asInstanceOf[ObjectNode].put("data", classicEvent)
+          }
+        }
       }
     }
     json.toProcessingMessageNel

@@ -142,11 +142,11 @@ class UnstructEventBase64CfLineSpec extends Specification with EnrichJobSpec {
   import EnrichJobSpec._
   override def appName = "unstruct-event-base64-cf-lines"
   sequential
-  "A job which processes a CloudFront file containing 1 valid custom unstructured event" should {
+  "A job which processes a CloudFront file containing 1 valid unstructured event" should {
     runEnrichJob(UnstructEventBase64CfLineSpec.lines, "cloudfront", "1", false,
       List("geo", "domain"))
 
-    "correctly output 1 custom unstructured event" in {
+    "correctly output 1 unstructured event" in {
       val Some(goods) = readPartFile(dirs.output)
       goods.size must_== 1
       val actual = goods.head.split("\t").map(s => if (s.isEmpty()) null else s)
