@@ -234,6 +234,7 @@ object EnrichJobSpec {
                 |"uri": "http://iglucentral.com"
               |}
             |}
+<<<<<<< HEAD
           |},
           |{
             |"name": "Secret Sauce Static Iglu Server",
@@ -244,6 +245,8 @@ object EnrichJobSpec {
                 |"uri": "http://iglu.sspinc.io"
               |}
             |}
+=======
+>>>>>>> 85edcb50c2d934f0f073f14f9d65938bf931bbf1
           |}
           |]
         |}

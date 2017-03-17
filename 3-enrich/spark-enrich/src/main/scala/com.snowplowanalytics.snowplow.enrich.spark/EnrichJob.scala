@@ -120,6 +120,17 @@ object EnrichJob extends SparkJob {
   }
 
   /**
+   * Create a symbolic link for each cached file.
+   * @param fileNamesToCache list of filenames and associated symbolic links that need caching
+   */
+  def createSymbolicLinks(fileNamesToCache: List[(String, String)]): Unit =
+    for ((filename, symlink) <- fileNamesToCache) {
+      val symlinkPath = Paths.get(symlink)
+      if (Files.notExists(symlinkPath))
+        Files.createSymbolicLink(symlinkPath, Paths.get(SparkFiles.get(filename)))
+    }
+
+  /**
    * A helper to get the filename from a URI.
    * @param uri The URL to extract the filename from
    * @return The extracted filename
@@ -166,11 +177,7 @@ class EnrichJob(@transient val spark: SparkSession, args: Array[String]) extends
     val input = getInputRDD(enrichConfig.inFormat, enrichConfig.inFolder)
       .map { e =>
         // no-op map creating the symlinks
-        for ((filename, symlink) <- fileNamesToCache) {
-          val symlinkPath = Paths.get(symlink)
-          Files.deleteIfExists(symlinkPath)
-          Files.createSymbolicLink(symlinkPath, Paths.get(SparkFiles.get(filename)))
-        }
+        createSymbolicLinks(fileNamesToCache)
         e
       }
 
