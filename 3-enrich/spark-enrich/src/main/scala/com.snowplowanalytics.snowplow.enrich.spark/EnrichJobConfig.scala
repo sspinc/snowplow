@@ -76,7 +76,7 @@ case class ParsedEnrichJobConfig(
   override val igluConfig: String,
   override val local: Boolean,
   etlTstamp: DateTime,
-  filesToCache: List[URI]
+  filesToCache: List[(URI, String)]
 ) extends EnrichJobConfig
 
 object EnrichJobConfig {
@@ -139,9 +139,9 @@ object EnrichJobConfig {
    * @param registry EnrichmentRegistry used to find the files that need caching
    * @return A list of URIs representing the files that need caching
    */
-  private def filesToCache(registry: EnrichmentRegistry): List[URI] =
+  private def filesToCache(registry: EnrichmentRegistry): List[(URI, String)] =
     registry.getIpLookupsEnrichment match {
-      case Some(ipLookups) => ipLookups.dbsToCache.map(_._1)
+      case Some(ipLookups) => ipLookups.dbsToCache
       case None => Nil
     }
 }

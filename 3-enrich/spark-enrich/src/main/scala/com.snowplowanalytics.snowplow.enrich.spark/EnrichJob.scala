@@ -17,6 +17,7 @@ package spark
 
 // Java
 import java.net.URI
+import java.nio.file.{Files, Paths}
 
 // Apache commons
 import org.apache.commons.codec.binary.Base64
@@ -25,7 +26,7 @@ import org.apache.commons.codec.binary.Base64
 import scalaz._
 
 // Spark
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{SparkConf, SparkContext, SparkFiles}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.serializer.KryoSerializer
 import org.apache.spark.sql.{Encoders, SparkSession}
@@ -119,17 +120,14 @@ object EnrichJob extends SparkJob {
   }
 
   /**
-   * Install files in Hadoop's DistributedCache
-   * @param conf Hadoop configuration
-   * @param filesToCache URIs of the files to cache
+   * A helper to get the filename from a URI.
+   * @param uri The URL to extract the filename from
+   * @return The extracted filename
    */
-  def installFilesInCache(conf: Configuration, filesToCache: List[URI]): Unit =
-    for (uri <- filesToCache) {
-      val hdfsPath = FileUtils.sourceFile(conf, uri)
-        .valueOr(e => throw FatalEtlError(e.toString))
-      val filename = FileUtils.extractFilenameFromURI(uri)
-      FileUtils.addToDistCache(conf, hdfsPath, filename)
-    }
+  def extractFilenameFromURI(uri: URI): String = {
+    val p = uri.getPath
+    p.substring(p.lastIndexOf('/') + 1, p.length)
+  }
 }
 
 /**
@@ -161,9 +159,20 @@ class EnrichJob(@transient val spark: SparkSession, args: Array[String]) extends
     import EnrichJob._
 
     // Install MaxMind file(s) if we have them
-    installFilesInCache(hadoopConfig, enrichConfig.filesToCache)
+    for ((uri, _) <- enrichConfig.filesToCache) { sc.addFile(uri.toString) }
+    val fileNamesToCache = enrichConfig.filesToCache
+      .map { case (uri, sl) => (extractFilenameFromURI(uri), sl) }
 
     val input = getInputRDD(enrichConfig.inFormat, enrichConfig.inFolder)
+      .map { e =>
+        // no-op map creating the symlinks
+        for ((filename, symlink) <- fileNamesToCache) {
+          val symlinkPath = Paths.get(symlink)
+          Files.deleteIfExists(symlinkPath)
+          Files.createSymbolicLink(symlinkPath, Paths.get(SparkFiles.get(filename)))
+        }
+        e
+      }
 
     val common = input
       .map(enrich(_, enrichConfig))
@@ -179,24 +188,20 @@ class EnrichJob(@transient val spark: SparkSession, args: Array[String]) extends
         }
         errors.map(BadRow(originalLine, _).toCompactJson)
       }
-    if (!bad.isEmpty) {
-      bad.saveAsTextFile(enrichConfig.badFolder)
-    }
+    bad.saveAsTextFile(enrichConfig.badFolder)
 
     // Handling of properly-formed rows
     val good = common
       .flatMap { case (_, enriched) => projectGoods(enriched) }
-    if (!good.isEmpty) {
-      spark.createDataset(good)(Encoders.bean(classOf[EnrichedEvent]))
-        .toDF()
-        // hack to preserve the order of the fields in the csv, otherwise it's alphabetical
-        .select(classOf[EnrichedEvent].getDeclaredFields().map(f => col(f.getName())): _*)
-        .write
-        .option("sep", "\t")
-        .option("escape", "")
-        .option("quote", "")
-        .csv(enrichConfig.outFolder)
-    }
+    spark.createDataset(good)(Encoders.bean(classOf[EnrichedEvent]))
+      .toDF()
+      // hack to preserve the order of the fields in the csv, otherwise it's alphabetical
+      .select(classOf[EnrichedEvent].getDeclaredFields().map(f => col(f.getName())): _*)
+      .write
+      .option("sep", "\t")
+      .option("escape", "")
+      .option("quote", "")
+      .csv(enrichConfig.outFolder)
   }
 
   /**

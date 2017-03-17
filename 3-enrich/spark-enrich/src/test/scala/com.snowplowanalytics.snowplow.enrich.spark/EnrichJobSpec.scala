@@ -70,8 +70,8 @@ object EnrichJobSpec {
   val etlTimestamp = "2001-09-09 01:46:40.000"
 
   private val outputFields = classOf[common.outputs.EnrichedEvent]
-      .getDeclaredFields
-      .map(_.getName)
+    .getDeclaredFields
+    .map(_.getName)
   private val unmatchableFields = List("event_id")
 
   /**
@@ -87,9 +87,9 @@ object EnrichJobSpec {
 
     def apply[S <: String](actual: Expectable[S]) = {
       result((unmatcheable && expected == null) || actual.value == expected,
-             "%s: %s".format(field, if (unmatcheable) "is unmatcheable" else "%s equals %s".format(actual.description, expected)),
-             "%s: %s does not equal %s".format(field, actual.description, expected),
-             actual)
+        "%s: %s".format(field, if (unmatcheable) "is unmatcheable" else "%s equals %s".format(actual.description, expected)),
+        "%s: %s does not equal %s".format(field, actual.description, expected),
+        actual)
     }
 
     /**
@@ -102,7 +102,11 @@ object EnrichJobSpec {
 
   /** A Specs2 matcher to check if a directory on disk is empty or not. */
   val beEmptyDir: Matcher[File] =
-    ((f: File) => !f.exists || (f.isDirectory && f.list().length == 0), "is populated dir")
+    ((f: File) =>
+      !f.isDirectory ||
+        f.list().length == 0 ||
+        f.listFiles().filter(f => f.getName != "_SUCCESS" && !f.getName.endsWith(".crc")).map(_.length).sum == 0,
+      "is populated dir")
 
   /**
    * Needed for the different specs using fors since it results in AsResult[Unit] which isn't one
